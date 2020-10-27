@@ -2,7 +2,7 @@ esphome:
   name: garage_door
   platform: ESP8266
   board: esp01_1m
-  
+
 wifi:
   ssid: !secret ssid
   password: !secret password
@@ -22,7 +22,7 @@ logger:
 api:
 
 ota:
-  
+
 time:
   - platform: homeassistant
     id: homeassistant_time
@@ -107,9 +107,9 @@ switch:
       - switch.turn_on: garage_relay
       - delay: 650ms
       - switch.turn_off: garage_relay
-      
+
 status_led:
-  pin: 
+  pin:
     number: GPIO13
     inverted: true
 

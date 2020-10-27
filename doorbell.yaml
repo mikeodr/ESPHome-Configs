@@ -10,7 +10,7 @@ wifi:
   ssid: !secret ssid_iot
   password: !secret password_iot
   domain: !secret domain
-  
+
     # Enable fallback hotspot (captive portal) in case wifi connection fails
   ap:
     ssid: "Doorbell Fallback Hotspot"
@@ -82,7 +82,7 @@ binary_sensor:
     name: "Quite mode input from home assistant"
     id: quite_mode
     entity_id: input_boolean.quite_mode
-    
+
   - platform: gpio
     id: button
     name: Doorbell Button
