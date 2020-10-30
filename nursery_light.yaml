@@ -1,9 +1,10 @@
 esphome:
-  name: basement_light
+  name: nursery_light
   platform: ESP8266
   board: esp01_1m
 
 wifi:
+  domain: !secret domain
   ssid: !secret ssid_iot
   password: !secret password_iot
 
@@ -30,7 +31,7 @@ output:
 
 light:
   - platform: binary
-    name: "Shelly 1 Light"
+    name: "Nursery Light"
     output: shelly_1_relay
     id: lightid
 
