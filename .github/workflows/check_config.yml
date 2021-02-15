@@ -1,0 +1,24 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Config Check
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the master branch
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    types: [ opened ]
+  schedule:
+    # Run on the 15th of the month at 9am
+    - cron: '0 9 15 * *'
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  test_config:
+    runs-on: ubuntu-18.04
+    container:
+      image: esphome/esphome:latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: esphome *.yaml config
