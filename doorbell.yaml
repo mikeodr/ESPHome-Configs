@@ -3,6 +3,10 @@ esphome:
   name: doorbell
   platform: ESP8266
   board: esp01_1m
+  on_boot:
+    priority: 800.0
+    then:
+      - output.turn_off: relay
 
 # WiFi connection, correct these
 # with values for your WiFi.
@@ -44,6 +48,11 @@ sensor:
   # Uptime sensor.
   - platform: uptime
     name: Doorbell Uptime
+    id: uptime_sensor
+    on_value_range:
+      above: 1000000
+      then:
+        - switch.turn_on: restart_bell
 
   # WiFi Signal sensor.
   - platform: wifi_signal
@@ -55,15 +64,16 @@ switch:
   # Switch to restart the doorbell.
   - platform: restart
     name: Doorbell Restart
+    id: restart_bell
 
+output:
   # Switch to turn on/off the chime.
   - platform: gpio
     id: relay
     inverted: true
-    name: Doorbell Chime
-    pin: GPIO0
-
-
+    pin:
+      number: GPIO0
+      mode: OUTPUT
 
 # Binary sensor representing the
 # Doorbell button push.
@@ -93,8 +103,7 @@ binary_sensor:
       inverted: true
     filters:
       # Small filter, to debounce the button press.
-      - delayed_on: 25ms
-      - delayed_off: 25ms
+      - delayed_on_off: 10ms
     on_press:
       # Only turn on the chime when it is active.
       then:
@@ -103,10 +112,13 @@ binary_sensor:
             and:
               - binary_sensor.is_off: nap_mode
               - binary_sensor.is_off: quite_mode
+              - sensor.in_range:
+                  id: uptime_sensor
+                  above: 3
           then:
-            - switch.turn_on: relay
+            - output.turn_on: relay
     on_release:
       # On release, turn of the chime.
-      - switch.turn_off: relay
+      - output.turn_off: relay
       # Debouce the automation
       - delay: 2s
