@@ -22,5 +22,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: mv test_secrets.yaml secrets.yaml
-      - run: shopts -s extglob
-      - run: esphome !(*secrets*).yaml config
+      - shell: bash
+        run: |
+          shopts -s extglob
+          esphome !(*secrets*).yaml config
