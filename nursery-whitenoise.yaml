@@ -1,0 +1,49 @@
+esphome:
+  name: nursery_whitenoise
+  platform: ESP8266
+  board: esp01_1m
+
+# Enable logging
+logger:
+api:
+ota:
+
+wifi:
+  domain: !secret domain
+  ssid: !secret ssid_iot
+  password: !secret password_iot
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Nursery Noise Fallback Hotspot"
+    password: !secret fallback_password
+
+captive_portal:
+
+binary_sensor:
+#  - platform: gpio
+#    pin:
+#      number: GPIO0
+#      mode: INPUT_PULLUP
+#      inverted: True
+#    name: "Sonoff S31 Button"
+#    on_press:
+#      - switch.toggle: relay
+  - platform: status
+    name: "Nursery Whitenoise Status"
+
+switch:
+  - platform: gpio
+    pin: GPIO12
+    id: relay
+    name: "White Noise"
+    icon: "mdi:volume-high"
+    restore_mode: ALWAYS_ON
+  - platform: gpio
+    id: status_led
+    pin: GPIO13
+    restore_mode: ALWAYS_OFF
+    inverted: yes
+
+#status_led:
+#  pin: GPIO13
