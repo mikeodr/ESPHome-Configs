@@ -21,7 +21,7 @@ jobs:
       image: esphome/esphome:latest
     steps:
       - uses: actions/checkout@v2
-      - run: mv test_secrets.yaml secrets.yaml
+      - run: mv test_secrets secrets.yaml
       - shell: bash
         run: |
           shopt -s extglob
