@@ -1,0 +1,32 @@
+esphome:
+  name: basement-proxy
+
+esp32:
+  board: m5stack-core-esp32
+  framework:
+    type: arduino
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  encryption:
+    key: "7KsFOySf3BybQJM3D+Qw6ZAFDYt2FYn87H5QHI2u4Ow="
+
+ota:
+
+wifi:
+  domain: !secret domain
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Basement-Proxy Fallback Hotspot"
+    password: !secret fallback_password
+
+captive_portal:
+
+bluetooth_proxy:
+  active: true
