@@ -1,5 +1,5 @@
 esphome:
-  name: nursery_whitenoise
+  name: nursery-whitenoise
   platform: ESP8266
   board: esp01_1m
 
