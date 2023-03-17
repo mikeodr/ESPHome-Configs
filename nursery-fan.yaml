@@ -1,5 +1,5 @@
 esphome:
-  name: nursery_fan
+  name: nursery-fan
   platform: ESP8266
   board: esp01_1m
 
