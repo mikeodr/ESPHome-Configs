@@ -1,6 +1,6 @@
 # Basic Config
 esphome:
-  name: general-switch
+  name: "modem-reset"
   platform: ESP8266
   board: esp01_1m
 
@@ -44,7 +44,7 @@ switch:
     pin: GPIO12
     id: relay
     name: "Switch"
-    restore_mode: RESTORE_DEFAULT_OFF
+    restore_mode: ALWAYS_ON
   - platform: gpio
     id: led_status
     pin: GPIO13
