@@ -21,14 +21,14 @@ wifi:
 captive_portal:
 
 binary_sensor:
-#  - platform: gpio
-#    pin:
-#      number: GPIO0
-#      mode: INPUT_PULLUP
-#      inverted: True
-#    name: "Sonoff S31 Button"
-#    on_press:
-#      - switch.toggle: relay
+  - platform: gpio
+    pin:
+     number: GPIO0
+     mode: INPUT_PULLUP
+     inverted: True
+    name: "Toggle Button"
+    on_press:
+     - switch.toggle: relay
   - platform: status
     name: "Nursery Fan Status"
 
