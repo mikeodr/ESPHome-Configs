@@ -5,7 +5,7 @@ esp32:
   board: m5stack-core-esp32
   framework:
     type: arduino
-    
+
 wifi:
   domain: !secret domain
   ssid: !secret ssid_iot
@@ -69,7 +69,7 @@ button:
 output:
   # Switch to turn on/off the chime.
   - platform: gpio
-    id: relay
+    id: chime_relay
     pin:
       number: GPIO22
       mode: OUTPUT
@@ -92,14 +92,19 @@ binary_sensor:
     id: quite_mode
     entity_id: input_boolean.quite_mode
 
+  - platform: homeassistant
+    name: "Master white noise is on"
+    id: adult_asleep
+    entity_id: switch.master_white_noise
+
   - platform: gpio
     id: doorbell_button
     name: Doorbell Button
     pin:
-      number: GPIO21
+      number: GPIO25
       inverted: true
       mode:
-        input: true 
+        input: true
         pullup: true
     filters:
       # Small filter, to debounce the button press.
@@ -112,7 +117,8 @@ binary_sensor:
             and:
               - binary_sensor.is_off: nap_mode
               - binary_sensor.is_off: quite_mode
+              - binary_sensor.is_off: adult_asleep
           then:
-            - output.turn_on: relay
+            - output.turn_on: chime_relay
             - delay: 110ms
-            - output.turn_off: relay
+            - output.turn_off: chime_relay
