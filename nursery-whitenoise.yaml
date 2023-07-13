@@ -38,7 +38,7 @@ switch:
     id: relay
     name: "White Noise"
     icon: "mdi:volume-high"
-    restore_mode: ALWAYS_ON
+    restore_mode: RESTORE_DEFAULT_ON
   - platform: gpio
     id: status_led
     pin: GPIO13
