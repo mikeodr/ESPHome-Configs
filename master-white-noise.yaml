@@ -1,8 +1,19 @@
-# Basic Config
 esphome:
-  name: "modem-reset"
-  platform: ESP8266
+  name: master-white-noise
+  friendly_name: master-white-noise
+
+esp8266:
   board: esp01_1m
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  encryption:
+    key: !secret main_bed_api_key
+
+ota:
 
 wifi:
   domain: !secret domain
@@ -11,49 +22,32 @@ wifi:
 
   # Enable fallback hotspot (captive portal) in case wifi connection fails
   ap:
-    ssid: "General Switch Fallback Hotspot"
+    ssid: "Master Noise Fallback Hotspot"
     password: !secret fallback_password
 
 captive_portal:
 
-logger:
-  #baud_rate: 0 # (UART logging interferes with cse7766)
-
-api:
-  encryption:
-    key: !secret modem_reset_api_key
-
-ota:
-
-# Device Specific Config
 binary_sensor:
   - platform: gpio
     pin:
       number: GPIO0
       mode: INPUT_PULLUP
       inverted: True
-    name: "Sonoff S31 Button"
+    name: "Toggle Button"
     on_press:
       - switch.toggle: relay
   - platform: status
-    name: "Sonoff S31 Status"
-
-sensor:
-  - platform: wifi_signal
-    name: "WiFi Signal"
-    update_interval: 60s
+    name: "Main Bed White Noise Status"
 
 switch:
   - platform: gpio
     pin: GPIO12
     id: relay
-    name: "Switch"
-    restore_mode: ALWAYS_ON
+    name: "Main Bed White Noise"
+    icon: "mdi:volume-high"
+    restore_mode: RESTORE_DEFAULT_ON
   - platform: gpio
-    id: led_status
+    id: status_led
     pin: GPIO13
     restore_mode: ALWAYS_OFF
     inverted: yes
-
-status_led:
-  pin: GPIO13

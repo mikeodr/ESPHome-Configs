@@ -2,19 +2,27 @@ esphome:
   name: m5-doorbell
 
 esp32:
-  board: m5stack-core-esp32
+  board: m5stack-atom
   framework:
-    type: arduino
+    type: esp-idf
+    version: recommended
 
 wifi:
   domain: !secret domain
-  ssid: !secret ssid_iot
-  password: !secret password_iot
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
 
   # Enable fallback hotspot (captive portal) in case wifi connection fails
   ap:
     ssid: "M5-Doorbell Fallback Hotspot"
     password: !secret fallback_password
+
+esp32_ble_tracker:
+  scan_parameters:
+    # We currently use the defaults to ensure Bluetooth
+    # can co-exist with WiFi In the future we may be able to
+    # enable the built-in coexistence logic in ESP-IDF
+    active: true
 
 bluetooth_proxy:
   active: true
@@ -24,8 +32,8 @@ logger:
 
 # Enable Home Assistant API
 api:
-
-captive_portal:
+  encryption:
+    key: !secret m5_doorbell_api_key
 
 ota:
 

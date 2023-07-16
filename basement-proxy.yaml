@@ -2,9 +2,10 @@ esphome:
   name: basement-proxy
 
 esp32:
-  board: m5stack-core-esp32
+  board: m5stack-atom
   framework:
-    type: arduino
+    type: esp-idf
+    version: recommended
 
 # Enable logging
 logger:
@@ -12,7 +13,7 @@ logger:
 # Enable Home Assistant API
 api:
   encryption:
-    key: "7KsFOySf3BybQJM3D+Qw6ZAFDYt2FYn87H5QHI2u4Ow="
+    key: !secret basement_proxy_api_key
 
 ota:
 
@@ -26,7 +27,12 @@ wifi:
     ssid: "Basement-Proxy Fallback Hotspot"
     password: !secret fallback_password
 
-captive_portal:
+esp32_ble_tracker:
+  scan_parameters:
+    # We currently use the defaults to ensure Bluetooth
+    # can co-exist with WiFi In the future we may be able to
+    # enable the built-in coexistence logic in ESP-IDF
+    active: true
 
 bluetooth_proxy:
   active: true
