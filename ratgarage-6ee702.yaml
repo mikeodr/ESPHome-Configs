@@ -1,0 +1,24 @@
+substitutions:
+  name: ratgarage-6ee702
+  friendly_name: ratgarage
+packages:
+  ratgdo.esphome: github://ratgdo/esphome-ratgdo/v25board_esp8266_d1_mini_lite.yaml@main
+esphome:
+  name: ${name}
+  name_add_mac_suffix: false
+  friendly_name: ${friendly_name}
+api:
+  encryption:
+    key: !secret ratgdo_api_key
+
+
+wifi:
+  domain: !secret domain
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  ap:
+    ssid: "ratgdo Fallback Hotspot"
+    password: !secret fallback_password
+
+captive_portal:
