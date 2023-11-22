@@ -37,13 +37,13 @@ binary_sensor:
     on_press:
       - switch.toggle: relay
   - platform: status
-    name: "Main Bed White Noise Status"
+    name: "Master White Noise Status"
 
 switch:
   - platform: gpio
     pin: GPIO12
     id: relay
-    name: "Main Bed White Noise"
+    name: "Master White Noise"
     icon: "mdi:volume-high"
     restore_mode: RESTORE_DEFAULT_ON
   - platform: gpio
