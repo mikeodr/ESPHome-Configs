@@ -54,6 +54,3 @@ switch:
     pin: GPIO13
     restore_mode: ALWAYS_OFF
     inverted: yes
-
-status_led:
-  pin: GPIO13

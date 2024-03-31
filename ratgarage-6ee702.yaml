@@ -37,8 +37,6 @@ time:
 
 ota:
 
-improv_serial:
-
 api:
   id: api_server
   encryption:
