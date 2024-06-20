@@ -12,6 +12,8 @@ api:
     key: !secret nusery_fan_api_key
 
 ota:
+  password: !secret ota_password
+  platform: esphome
 
 wifi:
   domain: !secret domain

@@ -11,6 +11,8 @@ api:
     key: !secret nursery_whitenoise_api_key
 
 ota:
+  password: !secret ota_password
+  platform: esphome
 
 wifi:
   domain: !secret domain

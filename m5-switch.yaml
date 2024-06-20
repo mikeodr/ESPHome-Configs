@@ -38,6 +38,8 @@ api:
     key: !secret m5_switch_api_key
 
 ota:
+  password: !secret ota_password
+  platform: esphome
 
 # Text sensors with general information.
 text_sensor:

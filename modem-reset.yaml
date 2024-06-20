@@ -24,6 +24,8 @@ api:
     key: !secret modem_reset_api_key
 
 ota:
+  password: !secret ota_password
+  platform: esphome
 
 # Device Specific Config
 binary_sensor:

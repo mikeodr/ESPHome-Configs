@@ -24,6 +24,8 @@ api:
     key: !secret nursery_light_api_key
 
 ota:
+  password: !secret ota_password
+  platform: esphome
 
 # Device Specific Config
 output:

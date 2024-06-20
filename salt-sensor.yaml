@@ -14,6 +14,8 @@ api:
     key: !secret salt_sensor_api_key
 
 ota:
+  password: !secret ota_password
+  platform: esphome
 
 wifi:
   domain: !secret domain

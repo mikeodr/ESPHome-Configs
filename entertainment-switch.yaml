@@ -15,6 +15,7 @@ api:
 
 ota:
   password: !secret ota_password
+  platform: esphome
 
 wifi:
   domain: !secret domain

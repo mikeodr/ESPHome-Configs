@@ -36,6 +36,8 @@ time:
     id: homeassistant_time
 
 ota:
+  password: !secret ota_password
+  platform: esphome
 
 api:
   id: api_server
