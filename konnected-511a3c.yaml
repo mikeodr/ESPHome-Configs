@@ -1,0 +1,13 @@
+substitutions:
+  name: konnected-511a3c
+  friendly_name: Alarm Panel Pro 511a3c
+packages:
+  konnected.alarm-panel-pro-ethernet: github://konnected-io/konnected-esphome/alarm-panel-pro-v1.8-ethernet.yaml@master
+esphome:
+  name: ${name}
+  name_add_mac_suffix: false
+  friendly_name: ${friendly_name}
+api:
+  encryption:
+    key: !secret alarm_panel_api_key
+web_server: !remove
