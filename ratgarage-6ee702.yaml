@@ -53,6 +53,4 @@ wifi:
     ssid: "ratgdo Fallback Hotspot"
     password: !secret fallback_password
 
-captive_portal:
-
 logger:
