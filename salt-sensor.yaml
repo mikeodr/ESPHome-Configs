@@ -57,7 +57,7 @@ sensor:
           - 1019369 -> 20.32
           - 1522059 -> 40.32
           - 2515949 -> 79.38
-      - offset: 6
+      - offset: -26
       - clamp:
           max_value: 100
           min_value: -10
