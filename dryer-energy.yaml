@@ -66,6 +66,10 @@ sensor:
             - 0.00331 -> 20.11
             - 0.00537 -> 25.03
             - 0.00710 -> 31.83
+      - median:
+          window_size: 5
+          send_every: 5
+          send_first_at: 1
       - lambda: return x * id(grid_voltage).state;
     unit_of_measurement: "W"
     on_value:
