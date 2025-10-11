@@ -44,30 +44,22 @@ button:
   - platform: restart
     name: Restart
 
+# i2c configuration entry for m5 Atom Lite
+i2c:
+  sda: 26
+  scl: 32
+  scan: true
+  id: bus_a
+
 # Example configuration entry
 sensor:
   - platform: uptime
     name: Uptime
-  - platform: hx711
-    name: "Weight"
-    dout_pin: GPIO32
-    clk_pin: GPIO26
-    update_interval: 60s
-    unit_of_measurement: kg
-    device_class: weight
-    state_class: measurement
-    accuracy_decimals: 1
-    filters:
-      # Reminder, these are done in the order
-      # that they are defined.
-      - calibrate_linear:
-          - 524742 -> 0
-          - 575643 -> 2.27
-          - 1019369 -> 20.32
-          - 1522059 -> 40.32
-          - 2515949 -> 79.38
-      - offset: -26
-      - clamp:
-          max_value: 100
-          min_value: -10
-          ignore_out_of_range: true
+
+  - platform: vl53l0x
+    i2c_id: bus_a
+    name: "VL53L0x Distance"
+    address: 0x29
+    update_interval: 5s
+    unit_of_measurement: "m"
+    long_range: True
