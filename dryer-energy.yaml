@@ -56,9 +56,10 @@ sensor:
     device_class: power
     state_class: measurement
     update_interval: 5s
+    sample_duration: 500ms
     filters:
+      - skip_initial: 3
       - calibrate_linear:
-          method: exact
           datapoints:
             - 0.00000 -> 0
             - 0.00108 -> 5.11
@@ -67,11 +68,7 @@ sensor:
             - 0.00331 -> 20.11
             - 0.00537 -> 25.03
             - 0.00710 -> 31.83
-      - median:
-          window_size: 5
-          send_every: 5
-          send_first_at: 1
-      - lambda: return x * id(grid_voltage).state;
+      - lambda: return x * 120;
     unit_of_measurement: "W"
     on_value:
       - then:
