@@ -51,6 +51,19 @@ i2c:
   scan: true
   id: bus_a
 
+light:
+  - platform: esp32_rmt_led_strip
+    rgb_order: GRB
+    chipset: WS2812
+    num_leds: 1
+    pin: 27
+    id: atom_led
+    name: Status Light
+    effects:
+      - random:
+      - flicker:
+      - addressable_rainbow:
+
 # Example configuration entry
 sensor:
   - platform: uptime
