@@ -25,4 +25,4 @@ jobs:
       - shell: bash
         run: |
           shopt -s extglob
-          esphome !(*secrets*).yaml config
+          esphome config !(*secrets*|*konnected*).yaml
