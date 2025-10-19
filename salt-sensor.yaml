@@ -70,24 +70,24 @@ sensor:
     name: Uptime
 
   - platform: vl53l0x
+    id: vl53l0x_distance
     i2c_id: bus_a
     name: "VL53L0x Distance"
     address: 0x29
     update_interval: 5s
     unit_of_measurement: "m"
     long_range: True
-
-  - platform: vl53l0x
-    i2c_id: bus_a
-    name: "Salt Level"
-    address: 0x29
-    update_interval: 15s
-    unit_of_measurement: "%"
-    long_range: true
     filters:
       - sliding_window_moving_average:
-          window_size: 10
-          send_every: 2
+          window_size: 60
+          send_every: 10
+
+  - platform: template
+    name: "Salt Level"
+    lambda: |-
+      return id(vl53l0x_distance).state;
+    unit_of_measurement: "%"
+    filters:
       - calibrate_linear:
           method: exact
           datapoints:
