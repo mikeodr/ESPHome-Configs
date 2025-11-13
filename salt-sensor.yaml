@@ -74,27 +74,28 @@ sensor:
     i2c_id: bus_a
     name: "VL53L0x Distance"
     address: 0x29
-    update_interval: 5s
+    update_interval: 15s
     unit_of_measurement: "m"
-    long_range: True
+    state_class: "measurement"
     filters:
       - sliding_window_moving_average:
           window_size: 60
-          send_every: 10
+          send_every: 5
 
   - platform: template
     name: "Salt Level"
     lambda: |-
       return id(vl53l0x_distance).state;
     unit_of_measurement: "%"
+    state_class: "measurement"
     filters:
       - calibrate_linear:
           method: exact
           datapoints:
-            # Map 0.50m (from sensor) to 100% (full salt)
-            - 0.50 -> 100
-            # Map 0.735m (from sensor) to 0% (empty salt)
-            - 0.735 -> 0
+            # Map (from sensor) to 100% (full salt)
+            - 0.35 -> 100
+            # Map (from sensor) to 0% (empty salt)
+            - 0.52 -> 0
       - lambda: |
           if (x < 0) return 0;
           else if (x > 100) return 100;
