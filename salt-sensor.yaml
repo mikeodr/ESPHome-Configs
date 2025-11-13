@@ -87,6 +87,7 @@ sensor:
     lambda: |-
       return id(vl53l0x_distance).state;
     unit_of_measurement: "%"
+    accuracy_decimals: 0
     state_class: "measurement"
     filters:
       - calibrate_linear:
@@ -95,9 +96,8 @@ sensor:
             # Map (from sensor) to 100% (full salt)
             - 0.35 -> 100
             # Map (from sensor) to 0% (empty salt)
-            - 0.52 -> 0
+            - 0.50 -> 0
       - lambda: |
           if (x < 0) return 0;
           else if (x > 100) return 100;
           else return (x);
-    accuracy_decimals: 0
