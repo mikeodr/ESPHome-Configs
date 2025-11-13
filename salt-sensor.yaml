@@ -98,6 +98,23 @@ sensor:
             # Map (from sensor) to 0% (empty salt)
             - 0.50 -> 0
       - lambda: |
+          // Set LED color and brightness based on salt level percentage
+          auto call = id(atom_led).turn_on();
+          call.set_brightness(0.45);
+
+          if (x >= 45) {
+            // Green for 45-100%
+            call.set_rgb(0.0, 1.0, 0.0);
+          } else if (x >= 25) {
+            // Yellow for 25%-55%
+            call.set_rgb(1.0, 1.0, 0.0);
+          } else {
+            // Red for 0-25%
+            call.set_rgb(1.0, 0.0, 0.0);
+          }
+
+          call.perform();
+
           if (x < 0) return 0;
           else if (x > 100) return 100;
           else return (x);
