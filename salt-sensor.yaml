@@ -80,7 +80,7 @@ sensor:
     filters:
       - sliding_window_moving_average:
           window_size: 60
-          send_every: 5
+          send_every: 30
 
   - platform: template
     name: "Salt Level"
@@ -94,9 +94,9 @@ sensor:
           method: exact
           datapoints:
             # Map (from sensor) to 100% (full salt)
-            - 0.35 -> 100
+            - 0.425 -> 100
             # Map (from sensor) to 0% (empty salt)
-            - 0.50 -> 0
+            - 0.525 -> 0
       - lambda: |
           // Set LED color and brightness based on salt level percentage
           auto call = id(atom_led).turn_on();
