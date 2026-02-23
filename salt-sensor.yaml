@@ -75,6 +75,7 @@ sensor:
     name: "VL53L0x Distance"
     address: 0x29
     update_interval: 15s
+    long_range: true
     unit_of_measurement: "m"
     state_class: "measurement"
     filters:
@@ -94,9 +95,9 @@ sensor:
           method: exact
           datapoints:
             # Map (from sensor) to 100% (full salt)
-            - 0.430 -> 100
+            - 0.40 -> 100
             # Map (from sensor) to 0% (empty salt)
-            - 0.525 -> 0
+            - 0.58 -> 0
       - lambda: |
           // Set LED color and brightness based on salt level percentage
           auto call = id(atom_led).turn_on();
