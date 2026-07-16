@@ -1,6 +1,7 @@
 esphome:
-  name: space-heater
-  friendly_name: space-heater
+  name: hrv-power
+  friendly_name: hrv-power
+  
 
 esp8266:
   board: esp01_1m
@@ -11,7 +12,7 @@ logger:
 # Enable Home Assistant API
 api:
   encryption:
-    key: !secret space_heater_api_key
+    key: !secret hrv_api_key
 
 ota:
   password: !secret ota_password
@@ -24,7 +25,7 @@ wifi:
 
   # Enable fallback hotspot (captive portal) in case wifi connection fails
   ap:
-    ssid: "Space-Heater Fallback Hotspot"
+    ssid: "Master Noise Fallback Hotspot"
     password: !secret fallback_password
 
 captive_portal:
@@ -39,14 +40,13 @@ binary_sensor:
     on_press:
       - switch.toggle: relay
   - platform: status
-    name: "Basement Space Heater Status"
+    name: "HRV Status Status"
 
 switch:
   - platform: gpio
     pin: GPIO12
     id: relay
-    name: "Basement Space Heater"
-    icon: "mdi:volume-high"
+    name: "HRV Power"
     restore_mode: RESTORE_DEFAULT_ON
   - platform: gpio
     id: status_led
