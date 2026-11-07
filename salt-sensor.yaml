@@ -18,6 +18,7 @@ api:
 esp32_ble_tracker:
   scan_parameters:
     active: true
+    continuous: true
 
 bluetooth_proxy:
   active: true
@@ -53,7 +54,7 @@ i2c:
 
 light:
   - platform: esp32_rmt_led_strip
-    rgb_order: GRB
+    channel_colors: GRB
     chipset: WS2812
     num_leds: 1
     pin: 27
