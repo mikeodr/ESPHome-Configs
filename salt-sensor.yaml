@@ -70,18 +70,34 @@ sensor:
   - platform: uptime
     name: Uptime
 
+  # Unfiltered readings, for diagnostics. Out-of-range readings show up as
+  # "unknown" here; noisy weak-signal readings show up as scatter.
   - platform: vl53l0x
-    id: vl53l0x_distance
+    id: vl53l0x_raw
     i2c_id: bus_a
-    name: "VL53L0x Distance"
+    name: "VL53L0x Raw Distance"
+    entity_category: diagnostic
     address: 0x29
     update_interval: 15s
     long_range: true
     unit_of_measurement: "m"
+    accuracy_decimals: 3
+    state_class: "measurement"
+
+  # Median instead of mean: the ESPHome VL53L0X driver does not check the
+  # sensor's range status, so weak/invalid returns (wall hits, water surface
+  # glare) are published as real distances. A mean gets dragged toward those
+  # outliers; a median rejects them as long as most readings are good.
+  - platform: copy
+    source_id: vl53l0x_raw
+    id: vl53l0x_distance
+    name: "VL53L0x Distance"
+    unit_of_measurement: "m"
+    accuracy_decimals: 3
     state_class: "measurement"
     filters:
-      - sliding_window_moving_average:
-          window_size: 60
+      - median:
+          window_size: 61
           send_every: 30
 
   - platform: template
@@ -96,7 +112,7 @@ sensor:
           method: exact
           datapoints:
             # Map (from sensor) to 100% (full salt)
-            - 0.50 -> 100
+            - 0.489 -> 100
             # Map (from sensor) to 0% (empty salt)
             - 0.68 -> 0
       - lambda: |
