@@ -16,8 +16,10 @@ wifi:
   ssid: !secret wifi_ssid
   password: !secret wifi_password
 
-bluetooth_proxy:
-  active: true
 esp32_ble_tracker:
   scan_parameters:
-    active: false
+    active: true
+    continuous: true
+
+bluetooth_proxy:
+  active: true
