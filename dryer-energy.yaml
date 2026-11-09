@@ -3,6 +3,10 @@ substitutions:
   friendly_name: "Power Sensor"
   device_description: "CT-clamp power sensor"
   homeassistant_grid_voltage_entity: sensor.home_site_voltage
+  # Current the drum motor/controls draw on the clamped leg with heat OFF
+  # (measure on an air-fluff/no-heat cycle). Anything above this is the
+  # 240 V heating element.
+  motor_amps: "5.0"
 
 esphome:
   name: "${device_name}"
@@ -60,6 +64,9 @@ sensor:
     filters:
       - skip_initial: 3
       - calibrate_linear:
+          # Interpolate between datapoints. The default (least_squares) fits a
+          # single line with a ~1.08 A intercept, i.e. ~130 W when idle.
+          method: exact
           datapoints:
             - 0.00000 -> 0
             - 0.00108 -> 5.11
@@ -68,7 +75,13 @@ sensor:
             - 0.00331 -> 20.11
             - 0.00537 -> 25.03
             - 0.00710 -> 31.83
-      - lambda: return x * 120;
+      # Clamp is on the motor leg: the motor runs at 120 V (leg-neutral),
+      # the heating element at 240 V (leg-leg) and shares this leg's current.
+      # Current up to motor_amps is motor-only; the rest is element.
+      - lambda: |-
+          const float motor = ${motor_amps};
+          if (x <= motor) return x * 120.0f;
+          return motor * 120.0f + (x - motor) * 240.0f;
     unit_of_measurement: "W"
     on_value:
       - then:
