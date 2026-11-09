@@ -1,7 +1,9 @@
 substitutions:
   name: tagreader-8bfa06
 packages:
-  adonno.tag_reader: github://adonno/tagreader/tagreader.yaml
+  # Vendored from github://adonno/tagreader/tagreader.yaml with a fix for
+  # ESPHome 2026.10 (NDEF records are no longer copyable).
+  adonno.tag_reader: !include packages/tagreader.yaml
 esphome:
   name: ${name}
   name_add_mac_suffix: false
