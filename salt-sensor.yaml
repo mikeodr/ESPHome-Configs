@@ -84,55 +84,24 @@ sensor:
     accuracy_decimals: 3
     state_class: "measurement"
 
-  # Median instead of mean: the ESPHome VL53L0X driver does not check the
-  # sensor's range status, so weak/invalid returns (wall hits, water surface
-  # glare) are published as real distances. A mean gets dragged toward those
-  # outliers; a median rejects them as long as most readings are good.
   - platform: copy
     source_id: vl53l0x_raw
-    id: vl53l0x_distance
-    name: "VL53L0x Distance"
-    unit_of_measurement: "m"
-    accuracy_decimals: 3
-    state_class: "measurement"
-    filters:
-      - median:
-          window_size: 61
-          send_every: 30
-
-  - platform: template
-    name: "Salt Level"
-    lambda: |-
-      return id(vl53l0x_distance).state;
+    name: "Salt  Level"
     unit_of_measurement: "%"
     accuracy_decimals: 0
-    state_class: "measurement"
     filters:
+      - median:
+          window_size: 60
+          send_every: 30
       - calibrate_linear:
           method: exact
           datapoints:
-            # Map (from sensor) to 100% (full salt)
+            # Map 0.10m (from sensor) to 100% (top of tank)
             - 0.489 -> 100
-            # Map (from sensor) to 0% (empty salt)
+            # Map 0.790m (from sensor) to 0%   (bottom of tank)
             - 0.68 -> 0
-      - lambda: |
-          // Set LED color and brightness based on salt level percentage
-          auto call = id(atom_led).turn_on();
-          call.set_brightness(0.45);
-
-          if (x >= 45) {
-            // Green for 45-100%
-            call.set_rgb(0.0, 1.0, 0.0);
-          } else if (x >= 25) {
-            // Yellow for 25%-55%
-            call.set_rgb(1.0, 1.0, 0.0);
-          } else {
-            // Red for 0-25%
-            call.set_rgb(1.0, 0.0, 0.0);
-          }
-
-          call.perform();
-
-          if (x < 0) return 0;
-          else if (x > 100) return 100;
-          else return (x);
+      - delta:
+          min_value: 2.0
+      - clamp:
+          min_value: 0
+          max_value: 100
