@@ -1,29 +1,65 @@
-# This is a basic workflow to help you get started with Actions
-
 name: Config Check
 
-# Controls when the action will run. Triggers the workflow on push or pull request
-# events but only for the master branch
 on:
   workflow_dispatch:
+    inputs:
+      esphome_version:
+        description: "ESPHome version (e.g. 2026.11.0, or 'latest'); blank uses the Makefile default"
+        required: false
+        default: ""
   push:
     branches: [ main ]
   pull_request:
-    types: [ opened ]
   schedule:
-    # Run on the 15th of the month at 9am
+    # Run on the 15th of the month at 9am against the newest ESPHome release,
+    # to catch upstream breakage before upgrading the pinned version
     - cron: '0 9 15 * *'
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+env:
+  # Scheduled runs use the newest release; otherwise the manual input or the
+  # version pinned in the Makefile
+  ESPHOME_VERSION_ARG: ${{ github.event_name == 'schedule' && 'ESPHOME_VERSION=latest' || (inputs.esphome_version != '' && format('ESPHOME_VERSION={0}', inputs.esphome_version) || '') }}
+
 jobs:
-  test_config:
-    runs-on: ubuntu-22.04
-    container:
-      image: esphome/esphome:latest
+  test:
+    name: Validate configs
+    # Config validation is light; the single-CPU runner (15 min job limit) is enough
+    runs-on: ubuntu-slim
+    outputs:
+      python-version: ${{ steps.python.outputs.version }}
     steps:
-      - uses: actions/checkout@v2
-      - run: mv test_secrets secrets.yaml
-      - shell: bash
+      - uses: actions/checkout@v4
+      - name: Python version required by ESPHome
+        id: python
         run: |
-          shopt -s extglob
-          esphome config !(*secrets*|*konnected*).yaml
+          version=$(make -s python-version ${{ env.ESPHOME_VERSION_ARG }})
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ steps.python.outputs.version }}
+          cache: pip
+          cache-dependency-path: Makefile
+      - run: make test ${{ env.ESPHOME_VERSION_ARG }}
+
+  build:
+    name: Compile configs
+    needs: test
+    # Compiling every config needs more than ubuntu-slim's 1 CPU / 15 min limit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ needs.test.outputs.python-version }}
+          cache: pip
+          cache-dependency-path: Makefile
+      - name: Cache PlatformIO and ESPHome build
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.platformio
+            .build/stage/.esphome
+          key: esphome-build-${{ hashFiles('Makefile') }}-${{ github.sha }}
+          restore-keys: |
+            esphome-build-${{ hashFiles('Makefile') }}-
+      - run: make build ${{ env.ESPHOME_VERSION_ARG }}
