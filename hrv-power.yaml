@@ -15,8 +15,8 @@ api:
     key: !secret hrv_api_key
 
 ota:
-  password: !secret ota_password
   platform: esphome
+  encryption:
 
 wifi:
   domain: !secret domain

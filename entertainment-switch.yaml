@@ -14,8 +14,8 @@ api:
     key: !secret entertainment_switch_api_key
 
 ota:
-  password: !secret ota_password
   platform: esphome
+  encryption:
 
 wifi:
   domain: !secret domain

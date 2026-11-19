@@ -23,8 +23,8 @@ bluetooth_proxy:
   active: true
 
 ota:
-  password: !secret ota_password
   platform: esphome
+  encryption:
 
 wifi:
   ssid: !secret wifi_ssid
