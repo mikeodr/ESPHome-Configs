@@ -24,7 +24,6 @@ wifi:
 
   # Enable fallback hotspot (captive portal) in case wifi connection fails
   ap:
-    ssid: "M5-Doorbell Fallback Hotspot"
     password: !secret fallback_password
 
 captive_portal:
@@ -52,13 +51,12 @@ sensor:
       id: power
       filters:
         throttle_average: 15s
-  - platform: integration
-    name: "energy"
-    sensor: power
-    time_unit: h
-    unit_of_measurement: kWh
-    filters:
-      - multiply: 0.001
+    energy:
+      name: "energy"
+      unit_of_measurement: kWh
+      filters:
+        - multiply: 0.001
+        - throttle: 15s
   - platform: total_daily_energy
     name: "Total Daily Energy"
     power_id: power
@@ -68,7 +66,7 @@ binary_sensor:
     pin:
       number: GPIO0
       mode: INPUT_PULLUP
-      inverted: True
+      inverted: true
     name: "Toggle Button"
     on_press:
       - switch.toggle: relay
