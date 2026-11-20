@@ -5,6 +5,11 @@ substitutions:
   # (measure on an air-fluff/no-heat cycle). Anything above this is the
   # 240 V heating element.
   motor_amps: "5.0"
+  # Raw ct_clamp RMS (ADC units) below this is ADC noise, not load. The A0 ADC
+  # is 10-bit (1 LSB ~= 0.00098), and ct_clamp drops repeated samples, so with
+  # no current a +/-1-2 LSB flicker reads as up to ~0.0014 (~960 W after
+  # calibration). A running dryer reads ~0.07.
+  noise_floor: "0.0025"
 
 esphome:
   name: "${device_name}"
@@ -52,6 +57,11 @@ sensor:
     sample_duration: 500ms
     filters:
       - skip_initial: 3
+      # The exact calibration maps 0 -> 0 with no offset, so without a floor
+      # ADC quantization noise shows up as hundreds of watts with the dryer off.
+      - lambda: |-
+          if (x < ${noise_floor}) return 0.0f;
+          return x;
       - calibrate_linear:
           # Interpolate between datapoints. The default (least_squares) fits a
           # single line with a ~1.08 A intercept, i.e. ~130 W when idle.
