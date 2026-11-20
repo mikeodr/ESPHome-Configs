@@ -11,3 +11,7 @@ api:
   encryption:
     key: !secret alarm_panel_api_key
 web_server: !remove
+
+ota:
+  - id: !extend konnected_ota
+    encryption:
