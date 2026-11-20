@@ -15,6 +15,9 @@ on:
     # to catch upstream breakage before upgrading the pinned version
     - cron: '0 9 15 * *'
 
+permissions:
+  contents: read
+
 env:
   # Scheduled runs use the newest release; otherwise the manual input or the
   # version pinned in the Makefile
@@ -28,13 +31,15 @@ jobs:
     outputs:
       python-version: ${{ steps.python.outputs.version }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
       - name: Python version required by ESPHome
         id: python
         run: |
           version=$(make -s python-version ${{ env.ESPHOME_VERSION_ARG }})
           echo "version=$version" >> "$GITHUB_OUTPUT"
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7.1.0
         with:
           python-version: ${{ steps.python.outputs.version }}
           cache: pip
@@ -47,14 +52,16 @@ jobs:
     # Compiling every config needs more than ubuntu-slim's 1 CPU / 15 min limit
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v7.1.0
         with:
           python-version: ${{ needs.test.outputs.python-version }}
           cache: pip
           cache-dependency-path: Makefile
       - name: Cache PlatformIO and ESPHome build
-        uses: actions/cache@v4
+        uses: actions/cache@v6.1.0
         with:
           path: |
             ~/.platformio
@@ -63,3 +70,18 @@ jobs:
           restore-keys: |
             esphome-build-${{ hashFiles('Makefile') }}-
       - run: make build ${{ env.ESPHOME_VERSION_ARG }}
+
+  # Fails when .github/workflows/actions.lock is out of sync with the
+  # workflows or a locked pin no longer verifies upstream.
+  # Run `gh actions-lock` after changing any `uses:` above.
+  lockfile:
+    name: Verify actions lockfile
+    runs-on: ubuntu-slim
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - run: gh extension install github/gh-actions-lock --pin v0.5.0
+      - run: gh actions-lock --verify
