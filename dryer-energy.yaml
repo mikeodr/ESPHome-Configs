@@ -1,8 +1,6 @@
 substitutions:
   device_name: dryer-energy
-  friendly_name: "Power Sensor"
   device_description: "CT-clamp power sensor"
-  homeassistant_grid_voltage_entity: sensor.home_site_voltage
   # Current the drum motor/controls draw on the clamped leg with heat OFF
   # (measure on an air-fluff/no-heat cycle). Anything above this is the
   # 240 V heating element.
@@ -39,20 +37,11 @@ ota:
   encryption:
 
 output:
-  - platform: esp8266_pwm
+  - platform: gpio
     id: power_led_output
     pin: D4
 
 sensor:
-  # The grid voltage entity from Home Assistant
-  # Used for Power calcuation
-  # V * A = W
-  - platform: homeassistant
-    name: "Grid Voltage Entity from Home Assistant"
-    entity_id: "${homeassistant_grid_voltage_entity}"
-    id: grid_voltage
-    internal: true
-
   - platform: ct_clamp
     sensor: adc_sensor
     name: "Live Power"
@@ -84,26 +73,16 @@ sensor:
           return motor * 120.0f + (x - motor) * 240.0f;
     unit_of_measurement: "W"
     on_value:
-      - then:
-          - script.execute: flash_led
+      - script.execute: flash_led
 
   - platform: adc
     pin: A0
     id: adc_sensor
     internal: true
 
-light:
-  - platform: binary
-    name: "Power Sensor LED"
-    id: power_led
-    output: power_led_output
-    internal: true
-
 script:
   - id: flash_led
     then:
-      - light.turn_on:
-          id: power_led
+      - output.turn_on: power_led_output
       - delay: 100ms
-      - light.turn_off:
-          id: power_led
+      - output.turn_off: power_led_output
