@@ -3,9 +3,7 @@ esphome:
   friendly_name: salt-sensor
 
 esp32:
-  board: m5stack-atom
-  framework:
-    type: esp-idf
+  variant: esp32
 
 # Enable logging
 logger:
@@ -16,12 +14,8 @@ api:
     key: !secret salt_sensor_api_key
 
 esp32_ble_tracker:
-  scan_parameters:
-    active: true
-    continuous: true
 
 bluetooth_proxy:
-  active: true
 
 ota:
   platform: esphome
@@ -39,17 +33,15 @@ wifi:
 
 captive_portal:
 
-# Exposed switches.
 button:
-  # Switch to restart the esp.
   - platform: restart
     name: Restart
 
-# i2c configuration entry for m5 Atom Lite
+# Grove port on the M5 Atom Lite
 i2c:
   sda: 26
   scl: 32
-  scan: true
+  scan: false
   id: bus_a
 
 light:
@@ -60,12 +52,7 @@ light:
     pin: 27
     id: atom_led
     name: Status Light
-    effects:
-      - random:
-      - flicker:
-      - addressable_rainbow:
 
-# Example configuration entry
 sensor:
   - platform: uptime
     name: Uptime
@@ -80,9 +67,7 @@ sensor:
     address: 0x29
     update_interval: 15s
     long_range: true
-    unit_of_measurement: "m"
     accuracy_decimals: 3
-    state_class: "measurement"
 
   - platform: copy
     source_id: vl53l0x_raw
@@ -93,12 +78,15 @@ sensor:
       - median:
           window_size: 60
           send_every: 30
+      # A window with no valid readings yields NaN, which clamp would turn
+      # into 0% and trip the low-salt automation
+      - filter_out: nan
       - calibrate_linear:
           method: exact
           datapoints:
-            # Map 0.10m (from sensor) to 100% (top of tank)
+            # Distance from the sensor at the top of the tank (full)
             - 0.489 -> 100
-            # Map 0.790m (from sensor) to 0%   (bottom of tank)
+            # Distance from the sensor at the bottom of the tank (empty)
             - 0.68 -> 0
       - delta:
           min_value: 2.0
