@@ -30,11 +30,6 @@ packages:
     files: [base.yaml]
     refresh: 1s
 
-# Sync time with Home Assistant.
-time:
-  - platform: homeassistant
-    id: homeassistant_time
-
 ota:
   platform: esphome
   encryption:
@@ -57,3 +52,5 @@ wifi:
 captive_portal:
 
 logger:
+  baud_rate: 0
+  level: INFO
