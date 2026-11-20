@@ -12,13 +12,12 @@ wifi:
 
   # Enable fallback hotspot (captive portal) in case wifi connection fails
   ap:
-    ssid: "General Switch Fallback Hotspot"
     password: !secret fallback_password
 
 captive_portal:
 
 logger:
-  #baud_rate: 0 # (UART logging interferes with cse7766)
+  baud_rate: 0
 
 api:
   encryption:
@@ -34,12 +33,10 @@ binary_sensor:
     pin:
       number: GPIO0
       mode: INPUT_PULLUP
-      inverted: True
+      inverted: true
     name: "Sonoff S31 Button"
     on_press:
       - switch.toggle: relay
-  - platform: status
-    name: "Sonoff S31 Status"
 
 sensor:
   - platform: wifi_signal
@@ -52,8 +49,8 @@ switch:
     id: relay
     name: "Switch"
     restore_mode: ALWAYS_ON
-  - platform: gpio
-    id: led_status
-    pin: GPIO13
-    restore_mode: ALWAYS_OFF
-    inverted: yes
+
+status_led:
+  pin:
+    number: GPIO13
+    inverted: true
