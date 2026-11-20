@@ -14,3 +14,10 @@ api:
 wifi:
   ssid: !secret wifi_ssid
   password: !secret wifi_password
+  # The package leaves the fallback hotspot open
+  ap:
+    password: !secret fallback_password
+
+# Only needed for first-time setup of the stock firmware
+improv_serial: !remove
+dashboard_import: !remove
